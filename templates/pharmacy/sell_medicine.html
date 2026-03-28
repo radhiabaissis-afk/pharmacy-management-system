@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sell Medicine</title>
+</head>
+<body>
+
+    <h2>Sell Medicine</h2>
+
+    <h3>{{ medicine.name }}</h3>
+    <p>Available Quantity: {{ medicine.quantity }}</p>
+    <p>Price: {{ medicine.price }}</p>
+{% if messages %}
+    {% for message in messages %}
+        <div style="color: green; font-weight: bold;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label>Quantity:</label>
+        <input type="number" name="quantity" min="1" required><br><br>
+
+        <label>Pharmacist Name:</label>
+        <input type="text" name="pharmacist" required><br><br>
+
+        <label>Prescription ID (if required):</label>
+        <input type="text" name="prescription_id"><br><br>
+
+        <button type="submit">Confirm Sale</button>
+    </form>
+
+    <br>
+    <a href="/">Back to Home</a>
+
+</body>
+</html>
