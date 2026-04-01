@@ -1,58 +1,93 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Medicine List</title>
-    <style>
-        body { font-family: Arial; padding: 20px; background: #f4f4f4; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
-        th { background: #4CAF50; color: white; }
-        .low-stock { background-color: #ffcccc; }
-        .expiring { background-color: #fff3cd; }
-        .btn { padding: 5px 10px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
-    </style>
-</head>
-<body>
+{% extends 'pharmacy/base.html' %}
+{% block page_title %}Medicines{% endblock %}
+{% block content %}
 
-<h2>Medicine List</h2>
+<div class="card-soft">
+<h3 class="mb-4 fw-bold">Medicines</h3>
 
-{% if messages %}
-    {% for message in messages %}
-        <p>{{ message }}</p>
+<form method="GET" class="mb-4 d-flex">
+    <input type="text"
+           name="q"
+           value="{{ request.GET.q }}"
+           class="form-control me-2"
+           placeholder="Search medicine...">
+
+    <button type="submit" class="btn btn-outline-primary">
+        Search
+    </button>
+</form>
+<table class="table table-bordered table-hover align-middle">
+
+    <thead class="table-light">
+        <tr>
+            <th>Medicine</th>
+            <th>Batch</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Expiration</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for batch in batches %}
+<tr {% if batch.quantity < 5 %} class="table-danger" {% endif %}>
+            <td>{{ batch.medicine.name }}</td>
+            <td>{{ batch.batch_number }}</td>
+            <td>
+    {% if batch.quantity == 0 %}
+        <span class="badge bg-dark">0 - Out of Stock</span>
+    {% elif batch.quantity < 5 %}
+        <span class="badge bg-danger">
+            {{ batch.quantity }} - Low Stock
+        </span>
+    {% else %}
+        <span class="badge bg-success">
+            {{ batch.quantity }} - In Stock
+        </span>
+    {% endif %}
+</td>
+            <td>${{ batch.price }}</td>
+            <td>{{ batch.expiration_date }}</td>
+
+           <td>
+
+    {% if batch.quantity > 0 %}
+        <a href="{% url 'sell_medicine' batch.pk %}"
+           class="btn btn-sm btn-primary">
+           <i class="fa-solid fa-cart-plus me-1"></i> Sell
+        </a>
+    {% else %}
+        <span class="badge bg-dark">
+            <i class="fa-solid fa-ban me-1"></i> Out of Stock
+        </span>
+    {% endif %}
+
+    <a href="{% url 'edit_medicine' batch.medicine.pk %}"
+       class="btn btn-sm btn-warning ms-1">
+       Edit
+    </a>
+
+    <a href="{% url 'delete_medicine' batch.medicine.pk %}"
+       class="btn btn-sm btn-danger ms-1">
+       Delete
+    </a>
+
+</td>
+
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6" class="text-center text-muted">
+                No medicines available
+            </td>
+        </tr>
     {% endfor %}
-{% endif %}
 
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Batch</th>
-        <th>Quantity</th>
-        <th>expiration Date</th>
-        <th>Price</th>
-        <th>Action</th>
-    </tr>
+    </tbody>
 
-    {% for medicine in medicines %}
-    <tr class="
-        {% if medicine.is_low_stock %}low-stock{% endif %}
-        {% if medicine.is_expiring_soon %}expiring{% endif %}
-    ">
-        <td>{{ medicine.name }}</td>
-        <td>{{ medicine.batch_number }}</td>
-        <td>{{ medicine.quantity }}</td>
-        <td>{{ medicine.expiration_date }}</td>
-        <td>${{ medicine.price }}</td>
-        <td>
-            <a class="btn" href="{% url 'sell_medicine' medicine.id %}">Sell</a>
-        </td>
-    </tr>
-    {% endfor %}
 </table>
 
-<p style="margin-top:20px;">
-🔴 Red = Low Stock (Less than 5)<br>
-🟡 Yellow = Expiring within 30 days
-</p>
+</div>
 
-</body>
-</html>
+{% endblock %}

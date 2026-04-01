@@ -24,7 +24,8 @@ SECRET_KEY = 'django-insecure-@rnb!sk4qzaf@5gt7drg@2@h#jl968o8hd6wgun#%o-9$(w(@0
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+if not DEBUG:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 ALLOWED_HOSTS = []
 
 
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     'pharmacy',
+    'pharmacy.apps.PharmacyConfig'
 ]
 
 MIDDLEWARE = [

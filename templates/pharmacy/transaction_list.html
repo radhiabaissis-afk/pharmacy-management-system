@@ -1,27 +1,46 @@
 {% extends 'pharmacy/base.html' %}
 
+{% block title %}Transactions | Pharmacy System{% endblock %}
+{% block page_title %}Transactions{% endblock %}
+
 {% block content %}
 
-<h1>Transaction History</h1>
+<h3 class="mb-4 fw-bold">Transaction History</h3>
 
-<table>
-    <tr>
-        <th>Medicine</th>
-        <th>Quantity</th>
-        <th>Pharmacist</th>
-        <th>Date</th>
-        <th>Hash</th>
-    </tr>
+<div class="card-soft">
+<table class="table table-bordered table-hover align-middle">
 
-    {% for t in transactions %}
-    <tr>
-        <td>{{ t.medicine.name }}</td>
-        <td>{{ t.quantity }}</td>
-        <td>{{ t.pharmacist }}</td>
-        <td>{{ t.timestamp }}</td>
-        <td style="font-size:10px;">{{ t.hash }}</td>
-    </tr>
-    {% endfor %}
+    <thead>
+        <tr>
+            <th>Medicine</th>
+            <th>Quantity</th>
+            <th>Pharmacist</th>
+            <th>Date</th>
+            <th>Hash</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t.batch.medicine.name }}</td>
+            <td>{{ t.quantity }}</td>
+            <td>{{ t.pharmacist }}</td>
+            <td>{{ t.timestamp }}</td>
+            <td style="font-size:12px; word-break: break-all;">
+                {{ t.hash }}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center text-muted">
+                No transactions yet
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
 </table>
+</div>
 
 {% endblock %}
